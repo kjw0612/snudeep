@@ -5,6 +5,7 @@ run(fullfile(fileparts(mfilename('fullpath')),...
   '..', 'matlab', 'vl_setupnn.m')) ;
 
 opts.expDir = fullfile('data','mnist-baseline') ;
+opts.gpus = [];
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
 opts.dataDir = fullfile('data','mnist') ;
@@ -13,7 +14,7 @@ opts.useBnorm = false ;
 opts.train.batchSize = 100 ;
 opts.train.numEpochs = 20 ;
 opts.train.continue = true ;
-opts.train.gpus = [] ;
+opts.train.gpus = opts.gpus;
 opts.train.learningRate = 0.001 ;
 opts.train.expDir = opts.expDir ;
 opts = vl_argparse(opts, varargin) ;

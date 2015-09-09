@@ -1,10 +1,10 @@
 %% Experiment with the cnn_mnist_fc_bnorm
 
 [net_bn, info_bn] = cnn_mnist(...
-  'expDir', 'data/mnist-bnorm', 'useBnorm', true);
+  'expDir', 'data/mnist-bnorm', 'useBnorm', true, 'gpus', [1]);
 
 [net_fc, info_fc] = cnn_mnist(...
-  'expDir', 'data/mnist-baseline', 'useBnorm', false);
+  'expDir', 'data/mnist-baseline', 'useBnorm', false, 'gpus', [1]);
 
 
 %%
@@ -18,10 +18,10 @@ h=legend('BSLN', 'BNORM') ;
 set(h,'color','none');
 title('objective') ;
 subplot(1,2,2) ;
-plot(info_fc.val.error, 'k') ; hold on ;
-plot(info_fc.val.topFiveError, 'k--') ;
-plot(info_bn.val.error, 'b') ;
-plot(info_bn.val.topFiveError, 'b--') ;
+plot(info_fc.val.error(1,:), 'k') ; hold on ; % first row for top1e
+plot(info_fc.val.error(2,:), 'k--') ; % second row for top5e
+plot(info_bn.val.error(1,:), 'b') ;
+plot(info_bn.val.error(2,:), 'b--') ;
 h=legend('BSLN-val','BSLN-val-5','BNORM-val','BNORM-val-5') ;
 grid on ;
 xlabel('Training samples [x10^3]'); ylabel('error') ;
