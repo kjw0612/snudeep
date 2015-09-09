@@ -1,128 +1,128 @@
-function vl_compilenn( varargin )
-% VL_COMPILENN  Compile the MatConvNet toolbox
-%    The `vl_compilenn()` function compiles the MEX files in the
-%    MatConvNet toolbox. See below for the requirements for compiling
-%    CPU and GPU code, respectively.
+function vl_compilenn(varargin)
+%VL_COMPILENN Compile the MatConvNet toolbox.
+%   The `vl_compilenn()` function compiles the MEX files in the
+%   MatConvNet toolbox. See below for the requirements for compiling
+%   CPU and GPU code, respectively.
 %
-%    `vl_compilenn('OPTION', ARG, ...)` accepts the following options:
+%   `vl_compilenn('OPTION', ARG, ...)` accepts the following options:
 %
-%    `EnableGpu`:: `false`
-%       Set to true in order to enable GPU support.
+%   `EnableGpu`:: `false`
+%      Set to true in order to enable GPU support.
 %
-%    `Verbose`:: 0
-%       Set the verbosity level (0, 1 or 2).
+%   `Verbose`:: 0
+%      Set the verbosity level (0, 1 or 2).
 %
-%    `Debug`:: `false`
-%       Set to true to compile the binaries with debugging
-%       information.
+%   `Debug`:: `false`
+%      Set to true to compile the binaries with debugging
+%      information.
 %
-%    `CudaMethod`:: Linux & Mac OS X: `mex`; Windows: `nvcc`
-%       Choose the method used to compile the CUDA code. There are two
-%       methods:
+%   `CudaMethod`:: Linux & Mac OS X: `mex`; Windows: `nvcc`
+%      Choose the method used to compile the CUDA code. There are two
+%      methods:
 %
-%       * The **`mex`** method uses the MATLAB MEX command with the
-%         configuration file
-%         `<MatConvNet>/matlab/src/config/mex_CUDA_<arch>.[sh/xml]`
-%         This configuration file is in XML format since MATLAB 8.3
-%         (R2014a) and is a Shell script for earlier versions. This
-%         is, principle, the preferred method as it uses the
-%         MATLAB-sanctioned compiler options.
+%      * The **`mex`** method uses the MATLAB MEX command with the
+%        configuration file
+%        `<MatConvNet>/matlab/src/config/mex_CUDA_<arch>.[sh/xml]`
+%        This configuration file is in XML format since MATLAB 8.3
+%        (R2014a) and is a Shell script for earlier versions. This
+%        is, principle, the preferred method as it uses the
+%        MATLAB-sanctioned compiler options.
 %
-%       * The **`nvcc`** method calls the NVIDIA CUDA compiler `nvcc`
-%         directly to compile CUDA source code into object files.
+%      * The **`nvcc`** method calls the NVIDIA CUDA compiler `nvcc`
+%        directly to compile CUDA source code into object files.
 %
-%         This method allows to use a CUDA toolkit version that is not
-%         the one that officially supported by a particular MATALB
-%         version (see below). It is also the default method for
-%         compilation under Windows and with CuDNN.
+%        This method allows to use a CUDA toolkit version that is not
+%        the one that officially supported by a particular MATALB
+%        version (see below). It is also the default method for
+%        compilation under Windows and with CuDNN.
 %
-%    `CudaRoot`:: guessed automatically
-%       This option specifies the path to the CUDA toolkit to use for
-%       compilation.
+%   `CudaRoot`:: guessed automatically
+%      This option specifies the path to the CUDA toolkit to use for
+%      compilation.
 %
-%    `EnableImreadJpeg`:: `true`
-%       Set this option to `true` to compile `vl_imreadjpeg`.
+%   `EnableImreadJpeg`:: `true`
+%      Set this option to `true` to compile `vl_imreadjpeg`.
 %
-%    `ImageLibrary`:: `libjpeg` (Linux), `gdiplus` (Windows), `quartz` (Mac)
-%       The image library to use for `vl_impreadjpeg`.
+%   `ImageLibrary`:: `libjpeg` (Linux), `gdiplus` (Windows), `quartz` (Mac)
+%      The image library to use for `vl_impreadjpeg`.
 %
-%    `ImageLibraryCompileFlags`:: platform dependent
-%       A cell-array of additional flags to use when compiling
-%       `vl_imreadjpeg`.
+%   `ImageLibraryCompileFlags`:: platform dependent
+%      A cell-array of additional flags to use when compiling
+%      `vl_imreadjpeg`.
 %
-%    `ImageLibraryLinkFlags`:: platform dependent
-%       A cell-array of additional flags to use when linking
-%       `vl_imreadjpeg`.
+%   `ImageLibraryLinkFlags`:: platform dependent
+%      A cell-array of additional flags to use when linking
+%      `vl_imreadjpeg`.
 %
-%    `EnableCudnn`:: `false`
-%       Set to `true` to compile CuDNN support.
+%   `EnableCudnn`:: `false`
+%      Set to `true` to compile CuDNN support.
 %
-%    `CudnnRoot`:: `'local/'`
-%       Directory containing the unpacked binaries and header files of
-%       the CuDNN library.
+%   `CudnnRoot`:: `'local/'`
+%      Directory containing the unpacked binaries and header files of
+%      the CuDNN library.
 %
-%    ## Compiling the CPU code
+%   ## Compiling the CPU code
 %
-%    By default, the `EnableGpu` option is switched to off, such that
-%    the GPU code support is not compiled in.
+%   By default, the `EnableGpu` option is switched to off, such that
+%   the GPU code support is not compiled in.
 %
-%    Generally, you only need a C/C++ compiler (usually Xcode, GCC or
-%    Visual Studio for Mac, Linux, and Windows respectively). The
-%    compiler can be setup in MATLAB using the
+%   Generally, you only need a C/C++ compiler (usually Xcode, GCC or
+%   Visual Studio for Mac, Linux, and Windows respectively). The
+%   compiler can be setup in MATLAB using the
 %
-%       mex -setup
+%      mex -setup
 %
-%    command.
+%   command.
 %
-%    ## Compiling the GPU code
+%   ## Compiling the GPU code
 %
-%    In order to compile the GPU code, set the `EnableGpu` option to
-%    `true`. For this to work you will need:
+%   In order to compile the GPU code, set the `EnableGpu` option to
+%   `true`. For this to work you will need:
 %
-%    * To satisfy all the requirement to compile the CPU code (see
-%      above).
+%   * To satisfy all the requirement to compile the CPU code (see
+%     above).
 %
-%    * A NVIDIA GPU with at least *compute capability 2.0*.
+%   * A NVIDIA GPU with at least *compute capability 2.0*.
 %
-%    * The *MATALB Parallel Computing Toolbox*. This can be purchased
-%      from Mathworks (type `ver` in MATLAB to see if this toolbox is
-%      already comprised in your MATLAB installation; it often is).
+%   * The *MATALB Parallel Computing Toolbox*. This can be purchased
+%     from Mathworks (type `ver` in MATLAB to see if this toolbox is
+%     already comprised in your MATLAB installation; it often is).
 %
-%    * A copy of the *CUDA Devkit*, which can be downloaded for free
-%      from NVIDIA. Note that each MATLAB version requires a
-%      particular CUDA Devkit version:
+%   * A copy of the *CUDA Devkit*, which can be downloaded for free
+%     from NVIDIA. Note that each MATLAB version requires a
+%     particular CUDA Devkit version:
 %
-%      | MATLAB version | Release | CUDA Devkit |
-%      |----------------|---------|-------------|
-%      | 2013b          | 2013b   | 5.5         |
-%      | 2014a          | 2014a   | 5.5         |
-%      | 2014b          | 2014b   | 6.0         |
+%     | MATLAB version | Release | CUDA Devkit |
+%     |----------------|---------|-------------|
+%     | 2013b          | 2013b   | 5.5         |
+%     | 2014a          | 2014a   | 5.5         |
+%     | 2014b          | 2014b   | 6.0         |
 %
-%      A different versions of CUDA may work using the hack described
-%      above (i.e. setting the `CudaMethod` to `nvcc`).
+%     A different versions of CUDA may work using the hack described
+%     above (i.e. setting the `CudaMethod` to `nvcc`).
 %
-%    The following configurations have been tested successfully:
+%   The following configurations have been tested successfully:
 %
-%    * Windows 7 x64, MATLAB R2014a, Visual C++ 2010 and CUDA Toolkit
-%      6.5 (unable to compile with Visual C++ 2013).
-%    * Windows 8 x64, MATLAB R2014a, Visual C++ 2013 and CUDA
-%      Toolkit 6.5.
-%    * Mac OS X 10.9 and 10.10, MATLAB R2013a and R2013b, Xcode, CUDA
-%      Toolkit 5.5.
-%    * GNU/Linux, MATALB R2014a, gcc, CUDA Toolkit 5.5.
+%   * Windows 7 x64, MATLAB R2014a, Visual C++ 2010 and CUDA Toolkit
+%     6.5 (unable to compile with Visual C++ 2013).
+%   * Windows 8 x64, MATLAB R2014a, Visual C++ 2013 and CUDA
+%     Toolkit 6.5.
+%   * Mac OS X 10.9 and 10.10, MATLAB R2013a and R2013b, Xcode, CUDA
+%     Toolkit 5.5.
+%   * GNU/Linux, MATALB R2014a, gcc, CUDA Toolkit 5.5.
 %
-%    Furthermore your GPU card must have ComputeCapability >= 2.0 (see
-%    output of `gpuDevice()`) in order to be able to run the GPU code.
-%    To change the compute capabilities, for `mex` `CudaMethod` edit
-%    the particular config file.  For the 'nvcc' method, compute
-%    capability is guessed based on the GPUDEVICE output. You can
-%    override it by setting the 'CudaArch' parameter (e.g. in case of
-%    multiple GPUs with various architectures).
+%   Furthermore your GPU card must have ComputeCapability >= 2.0 (see
+%   output of `gpuDevice()`) in order to be able to run the GPU code.
+%   To change the compute capabilities, for `mex` `CudaMethod` edit
+%   the particular config file.  For the 'nvcc' method, compute
+%   capability is guessed based on the GPUDEVICE output. You can
+%   override it by setting the 'CudaArch' parameter (e.g. in case of
+%   multiple GPUs with various architectures).
 %
-%    See also: [Compliling MatConvNet](../install.md#compiling),
-%    [Compiling MEX files containing CUDA
-%    code](http://mathworks.com/help/distcomp/run-mex-functions-containing-cuda-code.html),
-%    `vl_setup()`, `vl_imreadjpeg()`.
+%   See also: [Compliling MatConvNet](../install.md#compiling),
+%   [Compiling MEX files containing CUDA
+%   code](http://mathworks.com/help/distcomp/run-mex-functions-containing-cuda-code.html),
+%   `vl_setup()`, `vl_imreadjpeg()`.
 
 % Copyright (C) 2014-15 Karel Lenc and Andrea Vedaldi.
 % All rights reserved.
@@ -235,29 +235,29 @@ end
 
 if opts.enableGpu
   opts.verbose && fprintf('%s: * CUDA configuration *\n', mfilename) ;
-  if isempty(opts.cudaRoot), opts.cudaRoot = search_cuda_devkit(opts); end
-  check_nvcc(opts.cudaRoot);
+
+  % Find the CUDA Devkit
+  if isempty(opts.cudaRoot), opts.cudaRoot = search_cuda_devkit(opts) ; end
   opts.verbose && fprintf('%s:\tCUDA: using CUDA Devkit ''%s''.\n', ...
                           mfilename, opts.cudaRoot) ;
+
+  opts.nvccPath = fullfile(opts.cudaRoot, 'bin', 'nvcc') ;
   switch arch
     case 'win64', opts.cudaLibDir = fullfile(opts.cudaRoot, 'lib', 'x64') ;
     case 'maci64', opts.cudaLibDir = fullfile(opts.cudaRoot, 'lib') ;
     case 'glnxa64', opts.cudaLibDir = fullfile(opts.cudaRoot, 'lib64') ;
     otherwise, error('Unsupported architecture ''%s''.', arch) ;
   end
-  opts.nvccPath = fullfile(opts.cudaRoot, 'bin', 'nvcc') ;
 
-  % CUDA arch string (select GPU architecture)
+  % Activate the CUDA Devkit
+  cuver = activate_nvcc(opts.nvccPath) ;
+  opts.verbose && fprintf('%s:\tCUDA: using NVCC ''%s'' (%d).\n', ...
+                          mfilename, opts.nvccPath, cuver) ;
+
+  % Set the CUDA arch string (select GPU architecture)
   if isempty(opts.cudaArch), opts.cudaArch = get_cuda_arch(opts) ; end
   opts.verbose && fprintf('%s:\tCUDA: NVCC architecture string: ''%s''.\n', ...
                           mfilename, opts.cudaArch) ;
-
-  % Make sure NVCC is visible by MEX by setting the corresp. env. var
-  if ~strcmp(getenv('MW_NVCC_PATH'), opts.nvccPath)
-    warning('Setting the ''MW_NVCC_PATH'' environment variable to ''%s''', ...
-            opts.nvccPath) ;
-    setenv('MW_NVCC_PATH', opts.nvccPath) ;
-  end
 end
 
 % --------------------------------------------------------------------
@@ -322,15 +322,15 @@ flags.link{end+1} = '-largeArrayDims' ;
 flags.mexcc = flags.cc ;
 flags.mexcc{end+1} = '-largeArrayDims' ;
 flags.mexcc{end+1} = '-cxx' ;
-if strcmp(arch, 'maci64')
+if strcmp(arch, 'maci64') && cuver < 70000
   % CUDA prior to 7.0 on Mac require GCC libstdc++ instead of the native
   % Clang libc++. This should go away in the future.
   flags.mexcc{end+1} = 'CXXFLAGS=$CXXFLAGS -stdlib=libstdc++' ;
   flags.link{end+1} = 'LDFLAGS=$LDFLAGS -stdlib=libstdc++' ;
   if  ~verLessThan('matlab', '8.5.0')
-    % Complicating matters, MATLAB 8.5.0 links to Clang c++ by default
-    % when linking MEX files overriding the option above. More force
-    % is needed:
+    % Complicating matters, MATLAB 8.5.0 links to Clang's libc++ by
+    % default when linking MEX files overriding the option above. We
+    % force it to use GCC libstdc++
     flags.link{end+1} = 'LINKLIBS=$LINKLIBS -L"$MATLABROOT/bin/maci64" -lmx -lmex -lmat -lstdc++' ;
   end
 end
@@ -548,7 +548,7 @@ paths{end+1} = sprintf('/usr/local/cuda/bin/nvcc') ;
 % Validate each candidate NVCC path
 for i=1:numel(paths)
   nvcc(i).path = paths{i} ;
-  [nvcc(i).isvalid, nvcc(i).version] = validate_nvcc(opts,paths{i}) ;
+  [nvcc(i).isvalid, nvcc(i).version] = validate_nvcc(paths{i}) ;
 end
 if opts.verbose
   fprintf('\t| %5s | %5s | %-70s |\n', 'valid', 'ver', 'NVCC path') ;
@@ -572,41 +572,57 @@ if opts.verbose
 end
 
 % -------------------------------------------------------------------------
-function [valid, cuver]  = validate_nvcc(opts, nvcc_path)
+function [valid, cuver]  = validate_nvcc(nvccPath)
 % -------------------------------------------------------------------------
-valid = false ;
-cuver = 0 ;
-if ~isempty(nvcc_path)
-  [status, output] = system(sprintf('"%s" --version', nvcc_path)) ;
-  valid = (status == 0) ;
+[status, output] = system(sprintf('"%s" --version', nvccPath)) ;
+valid = (status == 0) ;
+if ~valid
+  cuver = 0 ;
+  return ;
 end
-if ~valid, return ; end
 match = regexp(output, 'V(\d+\.\d+\.\d+)', 'match') ;
 if isempty(match), valid = false ; return ; end
 cuver = [1e4 1e2 1] * sscanf(match{1}, 'V%d.%d.%d') ;
 
 % --------------------------------------------------------------------
-function check_nvcc(cuda_root)
+function cuver = activate_nvcc(nvccPath)
 % --------------------------------------------------------------------
-% Checks whether the nvcc is in the path. If not, guessed out of CudaRoot.
-[status, ~] = system('nvcc --help');
-if status ~= 0
-  warning('nvcc not found in PATH. Trying to guess out of CudaRoot.');
-  cuda_bin_path = fullfile(cuda_root, 'bin');
-  prev_path = getenv('PATH');
+
+% Validate the NVCC compiler installation
+[valid, cuver] = validate_nvcc(nvccPath) ;
+if ~valid
+  error('The NVCC compiler ''%s'' does not appear to be valid.', nvccPath) ;
+end
+
+% Make sure that NVCC is visible by MEX by setting the MW_NVCC_PATH
+% environment variable to the NVCC compiler path
+if ~strcmp(getenv('MW_NVCC_PATH'), nvccPath)
+  warning('Setting the ''MW_NVCC_PATH'' environment variable to ''%s''', nvccPath) ;
+  setenv('MW_NVCC_PATH', nvccPath) ;
+end
+
+% In some operating systems and MATLAB versions, NVCC must also be
+% available in the command line search path. Make sure that this is%
+% the case.
+[valid_, cuver_] = validate_nvcc('nvcc') ;
+if ~valid || cuver_ ~= cuver
+  warning('NVCC not found in the command line path or the one found does not matches ''%s''.', nvccPath);
+  nvccDir = fileparts(nvccPath) ;
+  prevPath = getenv('PATH') ;
   switch computer
-    case 'PCWIN64', separator = ';';
-    case {'GLNXA64', 'MACI64'}, separator = ':';
+    case 'PCWIN64', separator = ';' ;
+    case {'GLNXA64', 'MACI64'}, separator = ':' ;
   end
-  setenv('PATH', [prev_path separator cuda_bin_path]);
-  [status, ~] = system('nvcc --help');
-  if status ~= 0
-    setenv('PATH', prev_path);
-    error('Unable to find nvcc.');
+  setenv('PATH', [nvccDir separator prevPath]) ;
+  [valid_, cuver_] = validate_nvcc('nvcc') ;
+  if ~valid_ || cuver_ ~= cuver
+    setenv('PATH', prevPath) ;
+    error('Unable to set the command line path to point to ''%s'' correctly.', nvccPath) ;
   else
-    fprintf('Location of nvcc (%s) added to your PATH.\n', cuda_bin_path);
+    fprintf('Location of NVCC (%s) added to your command search PATH.\n', nvccDir) ;
   end
 end
+
 
 % --------------------------------------------------------------------
 function cudaArch = get_cuda_arch(opts)

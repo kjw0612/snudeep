@@ -202,11 +202,11 @@ for i=1:n
       if isfield(l, 'weights')
         res(i+1).x = vl_nnconvt(res(i).x, l.weights{1}, l.weights{2}, ...
                                'crop', l.crop, 'upsample', l.upsample, ...
-                               cudnn{:}) ;
+                               'numgroups', l.numgroups, cudnn{:}) ;
       else
         res(i+1).x = vl_nnconv(res(i).x, l.filters, l.biases, ...
                                'crop', l.pad, 'upsample', l.upsample, ...
-                               cudnn{:}) ;
+                               'numgroups', l.numgroups, cudnn{:}) ;
       end
     case 'pool'
       res(i+1).x = vl_nnpool(res(i).x, l.pool, ...
@@ -222,7 +222,8 @@ for i=1:n
     case 'softmaxloss'
       res(i+1).x = vl_nnsoftmaxloss(res(i).x, l.class) ;
     case 'relu'
-      res(i+1).x = vl_nnrelu(res(i).x) ;
+      if isfield(l, 'leak'), leak = {'leak', l.leak} ; else leak = {} ; end
+      res(i+1).x = vl_nnrelu(res(i).x,[],leak{:}) ;
     case 'sigmoid'
       res(i+1).x = vl_nnsigmoid(res(i).x) ;
     case 'noffset'
@@ -317,15 +318,14 @@ if doder
                 vl_nnconvt(res(i).x, l.weights{1}, l.weights{2}, ...
                           res(i+1).dzdx, ...
                           'crop', l.crop, 'upsample', l.upsample, ...
-                          cudnn{:}) ;
+                          'numgroups', l.numgroups, cudnn{:}) ;
           else
             % Legacy code: will go
             [res(i).dzdx, res(i).dzdw{1}, res(i).dzdw{2}] = ...
                 vl_nnconvt(res(i).x, l.filters, l.biases, ...
                          res(i+1).dzdx, ...
                           'crop', l.crop, 'upsample', l.upsample, ...
-                          cudnn{:}) ;
-          end
+                          'numgroups', l.numgroups, cudnn{:}) ;          end
         else
           dzdw = cell(1,2) ;
           if isfield(l, 'weights')
@@ -333,21 +333,19 @@ if doder
                 vl_nnconvt(res(i).x, l.weights{1}, l.weights{2}, ...
                           res(i+1).dzdx, ...
                           'crop', l.crop, 'upsample', l.upsample, ...
-                          cudnn{:}) ;
-          else
+                          'numgroups', l.numgroups, cudnn{:}) ;          else
             % Legacy code: will go
             [res(i).dzdx, dzdw{1}, dzdw{2}] = ...
                 vl_nnconvt(res(i).x, l.filters, l.biases, ...
                           res(i+1).dzdx, ...
                           'crop', l.crop, 'upsample', l.upsample, ...
-                          cudnn{:}) ;
-          end
+                          'numgroups', l.numgroups, cudnn{:}) ;          end
           for j=1:2
             res(i).dzdw{j} = res(i).dzdw{j} + dzdw{j} ;
           end
           clear dzdw ;
         end
-       
+
       case 'pool'
         res(i).dzdx = vl_nnpool(res(i).x, l.pool, res(i+1).dzdx, ...
                                 'pad', l.pad, 'stride', l.stride, ...
@@ -362,12 +360,13 @@ if doder
       case 'softmaxloss'
         res(i).dzdx = vl_nnsoftmaxloss(res(i).x, l.class, res(i+1).dzdx) ;
       case 'relu'
+        if isfield(l, 'leak'), leak = {'leak', l.leak} ; else leak = {} ; end
         if ~isempty(res(i).x)
-          res(i).dzdx = vl_nnrelu(res(i).x, res(i+1).dzdx) ;
+          res(i).dzdx = vl_nnrelu(res(i).x, res(i+1).dzdx, leak{:}) ;
         else
           % if res(i).x is empty, it has been optimized away, so we use this
           % hack (which works only for ReLU):
-          res(i).dzdx = vl_nnrelu(res(i+1).x, res(i+1).dzdx) ;
+          res(i).dzdx = vl_nnrelu(res(i+1).x, res(i+1).dzdx, leak{:}) ;
         end
       case 'sigmoid'
         res(i).dzdx = vl_nnsigmoid(res(i).x, res(i+1).dzdx) ;
@@ -424,3 +423,4 @@ if doder
     res(i).backwardTime = toc(res(i).backwardTime) ;
   end
 end
+

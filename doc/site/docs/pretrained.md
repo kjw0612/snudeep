@@ -60,6 +60,17 @@ used in MatConvNet.
      - [imagenet-caffe-ref](models/imagenet-caffe-ref.mat)
      - [imagenet-caffe-alex](models/imagenet-caffe-alex.mat)
 
+-    GoogLeNet model from the
+     [Caffe zoo](https://github.com/BVLC/caffe/tree/master/models/bvlc_googlenet). This
+     model uses the `DagNN` wrapper instead of `vl_simplenn`.
+
+     **Citation:** `Going deeper with convolutions.' *C. Szegedy,
+     W. Liu, Y. Jia, P. Sermanet, S. Reed, D. Anguelov, D. Erhan,
+     V. Vanhoucke, and A. Rabinovich,* arXiv preprint,
+     (1409.4842v1-2), 2015.
+
+     - [imagenet-googlenet-dag](models/imagenet-googlenet-dag.mat)
+
 This is a summary of the performance of these models on the ILSVRC
 2012 validation data:
 
@@ -87,34 +98,5 @@ way that MATLAB had to call `imresize` for each input image.
 
 ## Using the pretrained models
 
-In order to run, say, `imagenet-vgg-s` on a test image, use:
-
-    % setup MtConvNet in MATLAB
-    run matlab/vl_setupnn
-
-    % download a pre-trained CNN from the web
-    urlwrite('http://www.vlfeat.org/sandbox-matconvnet/models/imagenet-vgg-f.mat', ...
-      'imagenet-vgg-f.mat') ;
-    net = load('imagenet-vgg-f.mat') ;
-
-    % obtain and preprocess an image
-    im = imread('peppers.png') ;
-    im_ = single(im) ; % note: 255 range
-    im_ = imresize(im_, net.normalization.imageSize(1:2)) ;
-    im_ = im_ - net.normalization.averageImage ;
-
-    % run the CNN
-    res = vl_simplenn(net, im_) ;
-
-    % show the classification result
-    scores = squeeze(gather(res(end).x)) ;
-    [bestScore, best] = max(scores) ;
-    figure(1) ; clf ; imagesc(im) ;
-    title(sprintf('%s (%d), score %.3f',...
-    net.classes.description{best}, best, bestScore)) ;
-
-`vl_simplenn` is a wrapper around MatConvNet core computational blocks
-that implements a CNN with a simple linear structure (a chain of
-layers). It is not needed to use the toolbox, but it simplifies common
-examples such as the ones discussed here. See also
-
+In order to run, say, `imagenet-vgg-s` on a test image, start from the
+example code included in the [quickstart guide](quick.md).

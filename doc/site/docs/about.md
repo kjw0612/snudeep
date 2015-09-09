@@ -23,6 +23,10 @@ here.
 <a name='changes'></a>
 # Changes
 
+-   1.0-beta14 (August 2015). New `DagNN` wrapper for networks with
+    complex toplogies. GoogLeNet support. Rewritten `vl_nnloss` block
+    with support for more loss functions. New blocks, better
+    documentation, bugfixes.
 -   1.0-beta13 (July 2015). Much faster batch normalization and several
     minor improvements and bugfixes.
 -   1.0-beta12 (May 2015). Added `vl_nnconvt` (convolution transpose or
@@ -56,6 +60,19 @@ here.
 -   1.0-beta3 (August 2014) Cleanup.
 -   1.0-beta2 (July 2014) Adds a set of standard models.
 -   1.0-beta1 (June 2014) First public release.
+
+# Contributors
+
+MatConvNet is developed by several hands:
+
+* Andrea Vedaldi, project coordiantor
+* Karel Lenc, DaG, several building blocks and examples
+* Sébastien Ehrhardt, GPU implementation of batch normalization, FCN
+  example
+* Max Jaderberg, general improvements and bugfixes
+
+MatConvNet quality also depends on the many people using the toolbox
+and providing us with feedback and bug reports.
 
 # Copyright
 
