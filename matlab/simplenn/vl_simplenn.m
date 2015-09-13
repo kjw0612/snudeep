@@ -245,8 +245,8 @@ for i=1:n
         res(i+1).x = vl_nnbnorm(res(i).x, l.filters, l.biases) ;
       end
     case 'pdist'
-      t = vl_nnpdist( res(i).x, l.class,  ...
-                      l.p, 'noRoot', l.noRoot, 'epsilon', l.epsilon) ;
+      t = vl_nnpdist(res(i).x, l.class,  ...
+                     l.p, 'noRoot', l.noRoot, 'epsilon', l.epsilon) ;
       if i == n % if pdist layer used as a loss(last) layer
         batchsize = size(res(i).x,4) ;
         res(i+1).x = sum(t(:)) / (l.p*batchsize) ;
@@ -416,8 +416,8 @@ if doder
           clear dzdw ;
         end
       case 'pdist'
-        res(i).dzdx = vl_nnpdist( res(i).x, l.class,  ...
-                                  l.p, res(i+1).dzdx, 'noRoot', l.noRoot, 'epsilon', l.epsilon) ;
+        res(i).dzdx = vl_nnpdist(res(i).x, l.class,  ...
+                                 l.p, res(i+1).dzdx, 'noRoot', l.noRoot, 'epsilon', l.epsilon) ;
       case 'custom'
         res(i) = l.backward(l, res(i), res(i+1)) ;
     end
