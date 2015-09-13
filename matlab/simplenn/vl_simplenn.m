@@ -221,6 +221,8 @@ for i=1:n
       res(i+1).x = vl_nnloss(res(i).x, l.class) ;
     case 'softmaxloss'
       res(i+1).x = vl_nnsoftmaxloss(res(i).x, l.class) ;
+    case 'euclidloss'
+      res(i+1).x = (res(i).x - l.class) .^ 2;  
     case 'relu'
       if isfield(l, 'leak'), leak = {'leak', l.leak} ; else leak = {} ; end
       res(i+1).x = vl_nnrelu(res(i).x,[],leak{:}) ;
@@ -359,6 +361,8 @@ if doder
         res(i).dzdx = vl_nnloss(res(i).x, l.class, res(i+1).dzdx) ;
       case 'softmaxloss'
         res(i).dzdx = vl_nnsoftmaxloss(res(i).x, l.class, res(i+1).dzdx) ;
+      case 'euclidloss'
+        res(i).dzdx = 2*(res(i).x - l.class);
       case 'relu'
         if isfield(l, 'leak'), leak = {'leak', l.leak} ; else leak = {} ; end
         if ~isempty(res(i).x)
