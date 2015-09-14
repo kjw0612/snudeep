@@ -33,28 +33,40 @@ for l = 1:numel(net.layers)
   switch net.layers{l}.type
     case {'conv', 'convt'}
       if isfield(net.layers{l},'filters')
+        sz = size(net.layers{l}.filters) ;
+        hasBias = ~isempty(net.layers{l}.biases) ;    
         params(1).name = sprintf('%sf',name) ;
         params(1).value = net.layers{l}.filters ;
-        params(2).name = sprintf('%sb',name) ;
-        params(2).value = net.layers{l}.biases ;
+        if hasBias
+          params(2).name = sprintf('%sb',name) ;
+          params(2).value = net.layers{l}.biases ;
+        end
       else
+        sz = size(net.layers{l}.weights{1}) ;
+        hasBias = ~isempty(net.layers{l}.weights{2}) ;
         params(1).name = sprintf('%sf',name) ;
         params(1).value = net.layers{l}.weights{1} ;
-        params(2).name = sprintf('%sb',name) ;
-        params(2).value = net.layers{l}.weights{2} ;
+        if hasBias
+          params(2).name = sprintf('%sb',name) ;
+          params(2).value = net.layers{l}.weights{2} ;
+        end
       end
       if isfield(net.layers{l},'learningRate')
         params(1).learningRate = net.layers{l}.learningRate(1) ;
-        params(2).learningRate = net.layers{l}.learningRate(2) ;
+        if hasBias
+          params(2).learningRate = net.layers{l}.learningRate(2) ;
+        end
       end
       if isfield(net.layers{l},'weightDecay')
         params(1).weightDecay = net.layers{l}.weightDecay(1) ;
-        params(2).weightDecay = net.layers{l}.weightDecay(2) ;
+        if hasBias
+          params(2).weightDecay = net.layers{l}.weightDecay(2) ;
+        end
       end
       switch net.layers{l}.type
         case 'conv'
           block = Conv() ;
-          block.size = size(net.layers{l}.weights{1}) ;
+          block.size = sz ;
           if isfield(net.layers{l},'pad')
             block.pad = net.layers{l}.pad ;
           end
@@ -63,16 +75,18 @@ for l = 1:numel(net.layers)
           end
         case 'convt'
           block = ConvTranspose() ;
+          block.size = sz ;
           if isfield(net.layers{l},'upsample')
             block.upsample = net.layers{l}.upsample ;
           end
           if isfield(net.layers{l},'crop')
             block.crop = net.layers{l}.crop ;
           end
-          if isfield(net.layers{l},'numgroups')
-            block.numgroups = net.layers{l}.numgroups ;
+          if isfield(net.layers{l},'numGroups')
+            block.numGroups = net.layers{l}.numGroups ;
           end
       end
+      block.hasBias = hasBias ;
     case 'pool'
       block = Pooling() ;
       if isfield(net.layers{l},'method')
