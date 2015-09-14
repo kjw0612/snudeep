@@ -1,5 +1,5 @@
-run matlab/vl_setupnn
-netData = load('data/models/imagenet-googlenet-dag.mat') ;
+run vl_setupnn
+netData = load('imagenet-googlenet-dag.mat') ;
 net = dagnn.DagNN.loadobj(netData) ;
 clear netData ;
 
