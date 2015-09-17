@@ -1,4 +1,4 @@
-function [net, info] = cnn_mnist_notify(varargin)
+function [net, info] = cnn_mnist_pushbullet(varargin)
 % CNN_MNIST  Demonstrated MatConNet on MNIST
 
 run(fullfile(fileparts(mfilename('fullpath')),...

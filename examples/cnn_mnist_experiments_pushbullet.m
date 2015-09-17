@@ -4,13 +4,17 @@ pbO = pbNotify('euCpdfX1nhxoDHEt4BxEs45xWQRlyH8H');
 % usage : pbNotify('accessToken'); from https://www.pushbullet.com/account
 
 try
-[net_bn, info_bn] = cnn_mnist_notify(...
+[net_bn, info_bn] = cnn_mnist_pushbullet(...
   'expDir', 'data/mnist-bnorm', 'useBnorm', true, 'gpus', [], 'pushbullet', pbO);
 
-[net_fc, info_fc] = cnn_mnist_notify(...
+[net_fc, info_fc] = cnn_mnist_pushbullet(...
   'expDir', 'data/mnist-baseline', 'useBnorm', false, 'gpus', [], 'pushbullet', pbO);
 catch
-    pbO.notify('Error happened during execution');
+    if ~isempty(pbO)
+        pbO.notify('Error happened during execution');
+    else
+        fprintf('Error happened during execution');
+    end
 end
 
 %%
