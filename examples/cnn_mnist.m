@@ -45,7 +45,6 @@ net = cnn_mnist_init('useBnorm', opts.useBnorm) ;
 
 if ~isempty(opts.pushbullet)
     opts.pushbullet.notify('training complete') ;
-    opts.pushbullet.pushFile(fullfile(opts.expDir, 'net-train.png'));
 end
 % --------------------------------------------------------------------
 function [im, labels] = getBatch(imdb, batch)
