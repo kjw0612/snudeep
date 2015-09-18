@@ -72,7 +72,6 @@ classdef DagNN < handle
     paramNames = struct()
     layerNames = struct()
     layerIndexes = {}
-    executionOrder = struct()
   end
 
   methods
