@@ -24,7 +24,8 @@ classdef pbNotify
             end
         end
         function r=notify(o,message)
-            r=urlread('https://api.pushbullet.com/v2/pushes','Authentication','Basic','username',o.accessToken,'password','','timeout',35,'post',{'type','note','title',['MATLAB:',o.computer],'body',message});
+            r=urlread('https://api.pushbullet.com/v2/pushes','Authentication','Basic','username',o.accessToken, ...
+                      'password','','timeout',35,'post',{'type','note','title',['MATLAB:',o.computer],'body',message});
         end
     end
     

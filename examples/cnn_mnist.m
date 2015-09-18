@@ -6,6 +6,7 @@ run(fullfile(fileparts(mfilename('fullpath')),...
 
 opts.expDir = fullfile('data','mnist-baseline') ;
 opts.gpus = [];
+opts.pushbullet = []; % usage : pbNotify('accessToken'); from https://www.pushbullet.com/account
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
 opts.dataDir = fullfile('data','mnist') ;
@@ -17,6 +18,7 @@ opts.train.continue = true ;
 opts.train.gpus = opts.gpus;
 opts.train.learningRate = 0.001 ;
 opts.train.expDir = opts.expDir ;
+opts.train.pushbullet = opts.pushbullet ;
 opts = vl_argparse(opts, varargin) ;
 
 % --------------------------------------------------------------------
@@ -36,11 +38,15 @@ net = cnn_mnist_init('useBnorm', opts.useBnorm) ;
 % --------------------------------------------------------------------
 %                                                                Train
 % --------------------------------------------------------------------
-
+% b = [10 10] + [10 10 10] ; error test
 [net, info] = cnn_train(net, imdb, @getBatch, ...
     opts.train, ...
     'val', find(imdb.images.set == 3)) ;
 
+if ~isempty(opts.pushbullet)
+    opts.pushbullet.notify('training complete') ;
+    opts.pushbullet.pushFile(fullfile(opts.expDir, 'net-train.png'));
+end
 % --------------------------------------------------------------------
 function [im, labels] = getBatch(imdb, batch)
 % --------------------------------------------------------------------

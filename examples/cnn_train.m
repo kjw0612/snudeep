@@ -190,8 +190,8 @@ for epoch=1:opts.numEpochs
   end
   drawnow ;
   print(1, modelFigPath, '-dpdf') ;
-  
-  if ~isempty(opts.pushbullet) && mod(epoch, opts.pushEpoch) == 0
+    
+  if ~isempty(opts.pushbullet) && mod(epoch, opts.pushEpoch) == 0    
     opts.pushbullet.notify(sprintf(['training message : epoch #%d\n' ...
                                     'loss : %f\n' ...
                                     'elapsed time : %f min(s)'], ...

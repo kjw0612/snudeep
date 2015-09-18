@@ -1,11 +1,21 @@
 %% Experiment with the cnn_mnist_fc_bnorm
 
+pbObj = [] ; % pbNotify('accessToken');
+% usage : pbNotify('accessToken'); from https://www.pushbullet.com/account
+
+try
 [net_bn, info_bn] = cnn_mnist(...
-  'expDir', 'data/mnist-bnorm', 'useBnorm', true, 'gpus', [1]);
+  'expDir', 'data/mnist-bnorm', 'useBnorm', true, 'gpus', [], 'pushbullet', pbObj);
 
 [net_fc, info_fc] = cnn_mnist(...
-  'expDir', 'data/mnist-baseline', 'useBnorm', false, 'gpus', [1]);
-
+  'expDir', 'data/mnist-baseline', 'useBnorm', false, 'gpus', [], 'pushbullet', pbObj);
+catch
+    if ~isempty(pbObj)
+        pbObj.notify('Error happened during execution');
+    else
+        fprintf('Error happened during execution');
+    end
+end
 
 %%
 figure(1) ; clf ;
