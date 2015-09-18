@@ -39,6 +39,8 @@ opts.errorFunction = 'multiclass' ;
 opts.errorLabels = {} ;
 opts.plotDiagnostics = false ;
 opts.memoryMapFile = fullfile(tempdir, 'matconvnet.bin') ;
+opts.pushbullet = [] ; % usage : pbNotify('accessToken'); from https://www.pushbullet.com/account
+opts.pushEpoch = 10 ;
 opts = vl_argparse(opts, varargin) ;
 
 if ~exist(opts.expDir, 'dir'), mkdir(opts.expDir) ; end
@@ -112,6 +114,7 @@ end
 %                                                        Train and validate
 % -------------------------------------------------------------------------
 
+starttime = tic ;
 for epoch=1:opts.numEpochs
   learningRate = opts.learningRate(min(epoch, numel(opts.learningRate))) ;
 
@@ -187,6 +190,13 @@ for epoch=1:opts.numEpochs
   end
   drawnow ;
   print(1, modelFigPath, '-dpdf') ;
+    
+  if ~isempty(opts.pushbullet) && mod(epoch, opts.pushEpoch) == 0    
+    opts.pushbullet.notify(sprintf(['training message : epoch #%d\n' ...
+                                    'loss : %f\n' ...
+                                    'elapsed time : %f min(s)'], ...
+                                    epoch, info.train.objective(epoch), toc(starttime)/60 )) ;
+  end
 end
 
 % -------------------------------------------------------------------------
