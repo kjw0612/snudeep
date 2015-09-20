@@ -1,5 +1,5 @@
 function eval(obj, inputs, derOutputs)
-% EVAL Evaluate the DAGNN
+%EVAL Evaluate the DAGNN
 %   EVAL(obj, inputs) evaluates the DaG for the specified input
 %   values. `inputs` is a cell array of the type `{'inputName',
 %   inputValue, ...}`. This call results in a forward pass through the
@@ -70,13 +70,8 @@ obj.computingDerivative = nargin > 2 && ~isempty(derOutputs) ;
 % -------------------------------------------------------------------------
 
 % set the input values
-for i = 1:2:numel(inputs)
-  v = obj.getVarIndex(inputs{i}) ;
-  switch obj.device
-    case 'cpu', obj.vars(v).value = gather(inputs{i+1}) ;
-    case 'gpu', obj.vars(v).value = gpuArray(inputs{i+1}) ;
-  end
-end
+v = obj.getVarIndex(inputs(1:2:end)) ;
+[obj.vars(v).value] = deal(inputs{2:2:end}) ;
 inputs = [] ;
 
 obj.numPendingVarRefs = [obj.vars.fanout] ;
@@ -98,6 +93,7 @@ v = obj.getVarIndex(derOutputs(1:2:end)) ;
 derOutputs = [] ;
 
 obj.numPendingVarRefs = zeros(1, numel(obj.vars)) ;
+obj.numPendingParamRefs = zeros(1, numel(obj.params)) ;
 for l = fliplr(obj.executionOrder)
   time = tic ;
   obj.layers(l).block.backwardAdvanced(obj.layers(l)) ;

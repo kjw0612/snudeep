@@ -11,28 +11,28 @@ classdef DagNN < handle
 %   - `vars`: The network variables.
 %   - `params`: The network parameters.
 %   - `meta`: Additional information relative to the CNN (e.g. input
-%      image format specification).
+%     image format specification).
 %
 %   There are additional transient data members:
 %
-%   `mode`:: [`normal`]
+%   `mode`:: `normal`
 %      This flag can either be `normal` or `test`. In the latter case,
 %      certain blocks switch to a test mode suitable for validation or
 %      evaluation as opposed to training. For instance, dropout
 %      becomes a pass-through block in `test` mode.
 %
-%   `accumulateParamDers`:: [`false`]
+%   `accumulateParamDers`:: `false`
 %      If this flag is set to `true`, then the derivatives of the
 %      network parameters are accumulated rather than rewritten the
 %      next time the derivatives are computed.
 %
-%   `conserveMemory`:: [`true`]
+%   `conserveMemory`:: `true`
 %      If this flag is set to `true`, the DagNN will discard
 %      intermediate variable values as soon as they are not needed
 %      anymore in the calculations. This is particularly important to
 %      save memory on GPUs.
 %
-%   `device`:: [`cpu`]
+%   `device`:: `cpu`
 %      This flag tells whether the DagNN resides in CPU or GPU
 %      memory. Use the `DagNN.move()` function to move the DagNN
 %      between devices.
@@ -62,6 +62,7 @@ classdef DagNN < handle
 
   properties (Transient, Access = {?dagnn.DagNN, ?dagnn.Layer}, Hidden = true)
     numPendingVarRefs
+    numPendingParamRefs
     computingDerivative = false
     executionOrder
   end
@@ -79,7 +80,7 @@ classdef DagNN < handle
     %DAGNN  Initialize an empty DaG
     %   OBJ = DAGNN() initializes an empty DaG.
     %
-    %   See Also addLayer
+    %   See Also addLayer(), loadobj(), saveobj().
       obj.vars = struct(...
         'name', {}, ...
         'value', {}, ...
@@ -102,6 +103,8 @@ classdef DagNN < handle
         'inputIndexes', {}, ...
         'outputIndexes', {}, ...
         'paramIndexes', {}, ...
+        'forwardTime', {[]}, ...
+        'backwardTime', {[]}, ...
         'block', {}) ;
     end
 
@@ -160,8 +163,9 @@ classdef DagNN < handle
     function l = getLayerIndex(obj, name)
     %GETLAYERINDEX Get the index of a layer
     %   INDEX = GETLAYERINDEX(obj, NAME) returns the index of the layer
-    %   NAME. NAME can also be a cell array of strings. If no layer with such a name is found, the value
-    %   NaN is returned for the index.
+    %   NAME. NAME can also be a cell array of strings. If no layer
+    %   with such a name is found, the value NaN is returned for the
+    %   index.
     %
     %   Variables can then be accessed as the `obj.layers(INDEX)`
     %   property of the DaG.
