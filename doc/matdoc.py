@@ -136,7 +136,10 @@ def render_S(tree, context):
     for n in tree.children: render_SL(n, context)
 
 def render_DH(tree, context):
-    print "%s**%s** [*%s*]" % (context, tree.description.strip(), tree.inner_text.strip())
+    if len(tree.inner_text.strip()) > 1:
+        print "%s**%s** [*%s*]" % (context, tree.description.strip(), tree.inner_text.strip())
+    else:
+        print "%s**%s**" % (context, tree.description.strip())
 
 def render_DI(tree, context):
     context.push(Frame("    ", "*   "))
@@ -204,10 +207,10 @@ if __name__ == '__main__':
         if len(components)>1 and components[-2][0] == '@':
             classDir = string.join(components[:-1],os.sep)
             for x in os.listdir(classDir):
-                if fnmatch.fnmatch(x, '*.m'):
+                if fnmatch.fnmatch(x, '*.m') and not x == components[-1]:
                     text = readText(classDir + os.sep + x)
                     funcs_ = extract(text)
-                    if len(funcs_) > 0 and funcs_[0].nature is not 'classdef':
+                    if len(funcs_) > 0:
                         funcs.append(funcs_[0])
     else:
         # For MATLAB functions, do not print subfuctions
