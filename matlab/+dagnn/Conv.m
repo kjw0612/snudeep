@@ -3,6 +3,7 @@ classdef Conv < dagnn.Filter
     size = [0 0 0 0]
     hasBias = true
     opts = {'cuDNN'}
+    init = [1 0]
   end
   
   methods
@@ -35,8 +36,8 @@ classdef Conv < dagnn.Filter
     
     function params = initParams(obj)
       sc = sqrt(2 / prod(obj.size(1:3))) ;
-      params{1} = randn(obj.size,'single') * sc ;
-      params{2} = zeros(obj.size(4),1,'single') * sc ;
+      params{1} = obj.init(1) * randn(obj.size,'single') * sc ;
+      params{2} = obj.init(2) + zeros(obj.size(4),1,'single') * sc ;
     end
     
     function obj = Conv(varargin)
