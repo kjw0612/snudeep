@@ -45,13 +45,13 @@ opts.format = 'ascii' ;
 opts.functions = true ;
 opts.parameters = true ;
 opts.variables = opts.all || nargin > 1 ;
-opts.memory = true ;
+opts.memory = false ;
 opts.dependencies = opts.all ;
 opts.maxNumColumns = 18 ;
 opts = vl_argparse(opts, varargin) ;
 
 if nargin == 1, inputSizes = {} ; end
-varSizes = obj.getVarSizes(inputSizes) ;
+if opts.variables, varSizes = obj.getVarSizes(inputSizes) ; end
 paramSizes = cellfun(@size, {obj.params.value}, 'UniformOutput', false) ;
 str = {''} ;
 
