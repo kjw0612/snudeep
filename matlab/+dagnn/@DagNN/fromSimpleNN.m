@@ -164,6 +164,8 @@ for l = 1:numel(net.layers)
       block = Sigmoid() ;
     case {'softmax'}
       block = SoftMax() ;
+    case {'euclidloss'}
+      block = EuclidLoss() ;
     case {'softmaxloss'}
       block = Loss('loss', 'softmaxlog') ;
       % The loss has two inputs

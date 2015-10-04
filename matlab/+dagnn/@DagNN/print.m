@@ -42,6 +42,7 @@ opts.all = false ;
 opts.format = 'ascii' ;
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
+<<<<<<< HEAD
 opts.layers = '*' ;
 opts.parameters = [] ;
 opts.variables = [] ;
@@ -52,12 +53,18 @@ if opts.all
   opts.parameters = '*' ;
 end
 opts.memory = true ;
+=======
+opts.functions = true ;
+opts.parameters = true ;
+opts.variables = opts.all || nargin > 1 ;
+opts.memory = false ;
+>>>>>>> dag
 opts.dependencies = opts.all ;
 opts.maxNumColumns = 18 ;
 opts = vl_argparse(opts, varargin) ;
 
 if nargin == 1, inputSizes = {} ; end
-varSizes = obj.getVarSizes(inputSizes) ;
+if opts.variables, varSizes = obj.getVarSizes(inputSizes) ; end
 paramSizes = cellfun(@size, {obj.params.value}, 'UniformOutput', false) ;
 str = {''} ;
 
