@@ -23,6 +23,8 @@ here.
 <a name='changes'></a>
 # Changes
 
+-   1.0-beta15 (September 2015). Supports for new `DagNN` blocks and
+    import script for the FCN models. Improved `vl_nnbnorm`.
 -   1.0-beta14 (August 2015). New `DagNN` wrapper for networks with
     complex toplogies. GoogLeNet support. Rewritten `vl_nnloss` block
     with support for more loss functions. New blocks, better
@@ -68,7 +70,7 @@ MatConvNet is developed by several hands:
 * Andrea Vedaldi, project coordiantor
 * Karel Lenc, DaG, several building blocks and examples
 * Sébastien Ehrhardt, GPU implementation of batch normalization, FCN
-  example
+  building blocks and examples
 * Max Jaderberg, general improvements and bugfixes
 
 MatConvNet quality also depends on the many people using the toolbox
