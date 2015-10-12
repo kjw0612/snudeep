@@ -41,6 +41,9 @@ opts.plotDiagnostics = false ;
 opts.memoryMapFile = fullfile(tempdir, 'matconvnet.bin') ;
 opts.pushbullet = [] ; % usage : pbNotify('accessToken'); from https://www.pushbullet.com/account
 opts.pushEpoch = 10 ;
+
+opts.maxout_groupsize = 4;
+opts.maxout_mask = [];
 opts = vl_argparse(opts, varargin) ;
 
 if ~exist(opts.expDir, 'dir'), mkdir(opts.expDir) ; end
