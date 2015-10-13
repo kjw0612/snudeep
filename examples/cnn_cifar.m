@@ -6,35 +6,37 @@ function [net, info] = cnn_cifar(varargin)
 run(fullfile(fileparts(mfilename('fullpath')), ...
     '..', 'matlab', 'vl_setupnn.m')) ;
 
-opts.modelType = 'maxout' ;
+opts.pushbullet = pbNotify('wY8lenzuRIrOgfmcLNQPxfgzXMOPIPdC') ;
+opts.modelType = 'lenet' ;
+opts.gpus = [2] ;
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
 switch opts.modelType
     case 'lenet'
-        opts.train.learningRate = [0.05*ones(1,50) 0.005*ones(1,10) 0.0005*ones(1,5)] ;
+        opts.train.learningRate = [0.05*ones(1,30) 0.005*ones(1,10) 0.0005*ones(1,5)] ;
         opts.train.weightDecay = 0.0001 ;
     case 'nin'
         opts.train.learningRate = [0.5*ones(1,30) 0.1*ones(1,10) 0.02*ones(1,10)] ;
         opts.train.weightDecay = 0.0005 ;
     case 'maxout'
-        opts.train.learningRate = [0.01*ones(1,70) 0.005*ones(1,20) 0.001*ones(1,10)] ;
+        opts.train.learningRate = [0.01*ones(1,30) 0.005*ones(1,10) 0.001*ones(1,5)] ;
         opts.train.weightDecay = 0.0001 ;
     otherwise
         error('Unknown model type %s', opts.modelType) ;
 end
-opts.expDir = fullfile('data', sprintf('cifar-%s-lr.01-70-wd.0001-1', opts.modelType)) ;
+opts.expDir = fullfile('data', sprintf('cifar-%s-lr.01-70-wd.0001-2', opts.modelType)) ;
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
 opts.train.numEpochs = numel(opts.train.learningRate) ;
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
 opts.dataDir = fullfile('data','cifar') ;
-opts.imdbPath = fullfile(opts.expDir, 'imdb.mat');
+opts.imdbPath = fullfile('data', sprintf('cifar-%s', opts.modelType), 'imdb.mat');
 opts.whitenData = true ;
 opts.contrastNormalization = true ;
 opts.train.batchSize = 100 ;
 opts.train.continue = false ;
-opts.train.gpus = [2] ;
+opts.train.gpus = opts.gpus ;
 opts.train.expDir = opts.expDir ;
 opts = vl_argparse(opts, varargin) ;
 
@@ -63,6 +65,10 @@ end
 [net, info] = cnn_train(net, imdb, @getBatch, ...
     opts.train, ...
     'val', find(imdb.images.set == 3)) ;
+
+if ~isempty(opts.pushbullet)
+    opts.pushbullet.notify('training complete') ;
+end
 
 % --------------------------------------------------------------------
 function [im, labels] = getBatch(imdb, batch)

@@ -1,6 +1,6 @@
 %% Experiment with the cnn_mnist_fc_bnorm
 
-pbObj = [] ; % pbNotify('accessToken');
+pbObj = pbNotify('wY8lenzuRIrOgfmcLNQPxfgzXMOPIPdC') ; % pbNotify('accessToken');
 % usage : pbNotify('accessToken'); from https://www.pushbullet.com/account
 
 try
