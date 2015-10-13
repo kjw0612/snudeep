@@ -41,6 +41,9 @@ opts.plotDiagnostics = false ;
 opts.memoryMapFile = fullfile(tempdir, 'matconvnet.bin') ;
 opts.pushbullet = [] ; % usage : pbNotify('accessToken'); from https://www.pushbullet.com/account
 opts.pushEpoch = 10 ;
+
+opts.maxout_groupsize = 4;
+opts.maxout_mask = [];
 opts = vl_argparse(opts, varargin) ;
 
 if ~exist(opts.expDir, 'dir'), mkdir(opts.expDir) ; end
@@ -180,7 +183,7 @@ for epoch=start+1:opts.numEpochs
     set(legend(leg{:}),'color','none') ;
     grid on ;
     xlabel('training epoch') ; ylabel('error') ;
-    title('error') ;
+    title( ['error: min(val) ' num2str(min(info.val.error(1,:)))] ) ;
   end
   drawnow ;
   print(1, modelFigPath, '-dpdf') ;
