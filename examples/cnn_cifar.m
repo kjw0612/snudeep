@@ -17,12 +17,12 @@ switch opts.modelType
         opts.train.learningRate = [0.5*ones(1,30) 0.1*ones(1,10) 0.02*ones(1,10)] ;
         opts.train.weightDecay = 0.0005 ;
     case 'maxout'
-        opts.train.learningRate = [0.2*ones(1,15) 0.05*ones(1,10) 0.01*ones(1,5)] ;
+        opts.train.learningRate = [0.01*ones(1,70) 0.005*ones(1,20) 0.001*ones(1,10)] ;
         opts.train.weightDecay = 0.0001 ;
     otherwise
         error('Unknown model type %s', opts.modelType) ;
 end
-opts.expDir = fullfile('data', sprintf('cifar-%s-4', opts.modelType)) ;
+opts.expDir = fullfile('data', sprintf('cifar-%s-lr.01-70-wd.0001-1', opts.modelType)) ;
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
 opts.train.numEpochs = numel(opts.train.learningRate) ;
@@ -34,7 +34,7 @@ opts.whitenData = true ;
 opts.contrastNormalization = true ;
 opts.train.batchSize = 100 ;
 opts.train.continue = false ;
-opts.train.gpus = [1] ;
+opts.train.gpus = [2] ;
 opts.train.expDir = opts.expDir ;
 opts = vl_argparse(opts, varargin) ;
 

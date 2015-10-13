@@ -183,7 +183,7 @@ for epoch=start+1:opts.numEpochs
     set(legend(leg{:}),'color','none') ;
     grid on ;
     xlabel('training epoch') ; ylabel('error') ;
-    title('error') ;
+    title( ['error: min(val) ' num2str(min(info.val.error(1,:)))] ) ;
   end
   drawnow ;
   print(1, modelFigPath, '-dpdf') ;
