@@ -45,6 +45,7 @@ opts.all = false ;
 opts.format = 'ascii' ;
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
+<<<<<<< HEAD
 opts.layers = '*' ;
 opts.parameters = [] ;
 opts.variables = [] ;
@@ -54,7 +55,7 @@ end
 if opts.all
   opts.parameters = '*' ;
 end
-opts.memory = true ;
+opts.memory = false ;
 opts.dependencies = opts.all ;
 opts.maxNumColumns = 18 ;
 opts = vl_argparse(opts, varargin) ;
