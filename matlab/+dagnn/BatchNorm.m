@@ -38,7 +38,7 @@ classdef BatchNorm < dagnn.ElementWise
       if obj.nbatch < 2
           obj.compVar = 1;
       else
-          obj.compVar = obj.nbatch / (obj.nbatch - 1);
+          obj.compVar = sqrt(obj.nbatch / (obj.nbatch - 1));
       end
     end
     
